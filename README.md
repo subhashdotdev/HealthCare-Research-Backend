@@ -1,0 +1,119 @@
+# Medical Research Analyst Backend
+
+## Overview
+The Medical Research Analyst Backend is a specialized AI-driven system designed to extract, analysis and summarization of medical research literature from PDF documents. By leveraging advanced natural language processing (NLP) and machine learning, this project aims to streamline the literature review process for healthcare professionals, researchers, and data analysts. It facilitates rapid knowledge discovery, ensuring that critical medical insights are easily accessible and actionable.
+
+## Key Features
+- **PDF Ingestion & Processing**: Seamless upload and parsing of complex medical PDF documents, including handling of multi-column layouts and tables.
+- **Intelligent Text Extraction**: High-fidelity extraction of text and structural elements from research papers using optical character recognition (OCR) and layout analysis.
+- **Medical Concept Analysis**: Automatic identification of key medical entities (e.g., diseases, treatments, drugs) and biological concepts.
+- **Automated Summarization**: Generation of concise, context-aware summaries of lengthy research articles.
+- **Literature Search Integration**: Integrated PubMed search to fetch and analyze relevant papers based on query keywords.
+- **Cloud-Native Storage**: Secure storage of processed documents and artifacts using Google Cloud Storage (GCP).
+- **Authentication & Security**: Robust user authentication and secure API endpoints ensuring data privacy.
+
+## Tech Stack
+- **Languages**: Python 3.9+
+- **Frameworks**: FastAPI (Backend API), Alembic (Migrations)
+- **AI/ML & NLP**: OpenAI API
+- **Database**: PostgreSQL (Relational Data)
+- **Cloud Services**: 
+  - **GCP**: Cloud Storage, Google Auth.
+- **Tools**: PyMuPDF/Pdf2Image.
+
+## System Architecture
+The system follows a microservice-like modular architecture:
+1. **Ingestion Layer**: Users upload PDFs or the system fetches them via PubMed search integration.
+2. **Processing Layer**:
+   - **Text Extraction**: Raw text is extracted using PyMuPDF or OCR tools.
+   - **Cleaning**: Noise removal and formatting normalization.
+3. **Analysis Layer**:
+   - Extracted text is passed through LLM pipelines for summarization and entity extraction.
+4. **Storage Layer**: 
+   - Metadata and user data are stored in the SQL database (PostgreSQL).
+   - Processed files and raw PDFs are stored in GCP buckets.
+5. **Presentation Layer**: The results are served via RESTful API endpoints to the frontend client.
+
+## Medical Use Cases
+- **Clinical Research Analysis**: Rapidly synthesizing findings from multiple trials to support evidence-based medicine.
+- **Systematic Literature Reviews**: Automating the screening and data extraction phases of systematic reviews.
+- **Guideline Comparison**: assisting in comparing treatment guidelines across different medical societies.
+- **Healthcare Decision Support**: Providing quick access to the latest research for challenging clinical cases.
+
+## How It Works
+1. **Upload/Search**: A user uploads a PDF or queries PubMed through the API.
+2. **Pipeline Trigger**: The backend initiates a processing pipeline for the document.
+3. **Extraction**: The system reads the PDF, converting pages to images or text streams as required.
+4. **Analysis**: AI models analyze the content to generate summaries and extract specific medical insights.
+5. **Response**: The processed data is returned as a structured JSON object, ready for display or further analysis.
+
+## Installation & Setup
+
+### Prerequisites
+- Python 3.9 or higher
+- Docker & Docker Compose (optional but recommended)
+- PostgreSQL database
+- Chrome Browser (for Selenium-based components)
+
+### Environment Setup
+1. **Clone the Repository**
+   ```bash
+   git clone <repository_url>
+   cd medical-research-analyst-backend
+   ```
+
+2. **Create a Virtual Environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Configuration
+Create a `.env` file in the root directory (based on `.env.example`) and populate the following variables:
+```env
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+GCP_DB_INSTANCE_IP= ""
+GCP_DATABASE_NAME= " "
+GCP_USER = " "
+GCP_DB_PASSWORD = " "
+SECRET_KEY=your_secret_key
+BUCKET_NAME=your_GCP_bucket_name
+GOOGLE_APPLICATION_CREDENTIALS=path/to/gcp_creds.json
+PUBMED_SEARCH_URL=https://pubmed.ncbi.nlm.nih.gov/
+PUBMED_NCBI_API_KEY = " " 
+SERP_API_KEY = " " 
+SEMANTIC_SCHOLAR_API_KEY = " " 
+OPENAI_API_KEY = " 
+
+```
+
+## Usage
+### Running Locally
+To start the server locally:
+```bash
+uvicorn app.main:app --reload --port 8001
+```
+Access the API documentation at: `http://localhost:8001/docs`
+
+### Using Docker
+```bash
+docker build -t medical-analyst-backend .
+docker run -p 8001:8001 --env-file .env medical-analyst-backend
+```
+
+## Limitations
+- **Medical Disclaimer**: The summaries and insights generated by this system are automated and may contain errors. They should verification by a qualified healthcare professional.
+- **Data Accuracy**: OCR quality depends on the source PDF clarity. Handwritten notes or low-quality scans may yield poor results.
+- **Not for Clinical Diagnosis**: This tool is for research support only and must not be used as a standalone diagnostic tool.
+
+## Future Enhancements
+- **Multi-Language Support**: Processing medical literature in non-English languages.
+- **EHR Integration**: Direct integration with Electronic Health Records for patient-specific research context.
+- **Advanced NER**: Fine-tuned models for detecting rare diseases and novel drug interactions.
+- **Graph Database**: Implementing knowledge graphs to link citations and concepts dynamically.
+
